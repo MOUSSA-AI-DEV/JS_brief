@@ -106,10 +106,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. Handle errors appropriately
         
         try {
+
             const response = await fetch('./assets/data/data.json');
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             allJobs = await response.json();
             saveAllJobs();
+
         } catch (error) {
             console.error("Error loading data.json:", error);
             jobListingsContainer.innerHTML = '<p class="job-listings__empty">Error loading job data.</p>';
@@ -121,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * @function saveAllJobs
      */
     const saveAllJobs = () => {
+
         // TODO: Implement localStorage save functionality
     };
 
@@ -203,12 +206,17 @@ document.addEventListener('DOMContentLoaded', () => {
      * @function renderProfileSkills
      */
     const renderProfileSkills = () => {
+
+
+
         // TODO: Implement skills rendering
         // Use this HTML template for each skill:
         // `<li class="profile-skill-tag" data-skill="${skill}">
         //     <span>${skill}</span>
         //     <button class="profile-skill-remove" aria-label="Remove skill ${skill}">✕</button>
         //  </li>`
+
+
     };
 
     /**
@@ -543,13 +551,31 @@ document.addEventListener('DOMContentLoaded', () => {
      * @function applyAllFilters
      */
     const applyAllFilters = () => {
+
+            searchInput.addEventListener('input',(e)=>{
+            const inputValue = e.target.value 
+            console.log(inputValue)
+            
+            const companies=allJobs.filter(item =>item.company.toLowerCase().includes(inputValue.toLowerCase()));
+             
+            const skills=allJobs.filter(item =>item.skills.toLowerCase().find(inputValue.toLowerCase()));
+          const poste=allJobs.filter(item =>item.role.toLowerCase().find(inputValue.toLowerCase()));
+
+            // console.log('the element is found ',finded)
+               renderJobs(skills)
+              renderJobs(companies)
+              renderJobs(poste)
+
+
+        })
+ 
         // TODO: Implement comprehensive filtering
         // 1. Get search term
         // 2. Combine profile skills and manual filters
         // 3. Filter jobs by tags and search term
         // 4. Update all UI components
     };
-
+    // moussa
     // ------------------------------------
     // --- EVENT HANDLERS ---
     // ------------------------------------
