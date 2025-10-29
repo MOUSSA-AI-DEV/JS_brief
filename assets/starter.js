@@ -20,19 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------------------------------------
     // --- GLOBAL VARIABLES ---
     // ------------------------------------
-    
+
     /** @type {Array} All job listings loaded from data.json */
     let allJobs = [];
-    
+
     /** @type {Array} Currently active manual filters */
     let manualFilters = [];
-    
+
     /** @type {Object} User profile data */
     let userProfile = { name: '', position: '', skills: [] };
-    
+
     /** @type {Array} Array of favorite job IDs */
     let favoriteJobIds = [];
-    
+
     // LocalStorage keys
     const PROFILE_STORAGE_KEY = 'jobAppUserProfile';
     const FAVORITES_STORAGE_KEY = 'jobAppFavorites';
@@ -52,11 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const profilePositionInput = document.getElementById('profile-position');
     const skillInput = document.getElementById('skill-input');
     const profileSkillsList = document.getElementById('profile-skills-list');
-    
+
     // DOM Elements - Tabs
     const tabsNav = document.querySelector('.tabs-nav');
     const tabContents = document.querySelectorAll('.tab-content');
-    
+
     // DOM Elements - Favorites
     const favoriteJobsContainer = document.getElementById('favorite-jobs-container');
     const favoritesCount = document.getElementById('favorites-count');
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const manageModalCloseBtn = document.getElementById('modal-close-btn-manage');
     const manageModalTitle = document.getElementById('manage-modal-title');
     const manageJobForm = document.getElementById('manage-job-form');
-    
+
     // DOM Elements - Manage Form Fields
     const jobIdInput = document.getElementById('job-id-input');
     const jobCompanyInput = document.getElementById('job-company');
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. If not, fetch from data.json
         // 3. Save to localStorage for persistence
         // 4. Handle errors appropriately
-        
+
         try {
 
             const response = await fetch('./assets/data/data.json');
@@ -205,17 +205,56 @@ document.addEventListener('DOMContentLoaded', () => {
      * Renders profile skills list
      * @function renderProfileSkills
      */
+  
     const renderProfileSkills = () => {
+        console.log("mouusasasa")
+        let arraySkils = []
+        // search regulare
 
+       
+       
+        skillInput.addEventListener("keydown", (event)=> {
+            const Skile_value = event.target.value 
+            if (event.key === "Enter") {
+                arraySkils.push(Skile_value) 
+                console.log(Skile_value)
+                console.log(arraySkils)
 
+   
+                // profileSkillsList.innerHTML=(AfficheSkils("moussa"))
+                // console.log(AfficheSkils("moussa"))
+                event.target.value =""
+                event.preventDefault()
+            }
+
+            Renderskils(arraySkils)
+        },
+
+        )
+
+       
+        //    re1 
 
         // TODO: Implement skills rendering
         // Use this HTML template for each skill:
-        // `<li class="profile-skill-tag" data-skill="${skill}">
-        //     <span>${skill}</span>
-        //     <button class="profile-skill-remove" aria-label="Remove skill ${skill}">✕</button>
-        //  </li>`
 
+
+        function AfficheSkils(skill) {
+console.log(skill)
+           return `<li class="profile-skill-tag" data-skill="${skill}">
+             <span>${skill}</span>
+             <button class="profile-skill-remove" aria-label="Remove skill ${skill}">✕</button>
+          </li>`
+        }
+        
+        const Renderskils = (arraySkils) => {
+            profileSkillsList.innerHTML = arraySkils.length>0
+                ? arraySkils.map(AfficheSkils).join('')
+                : '<p class="job-listings__empty">No skils match your search.</p>'
+        };
+    
+
+      
 
     };
 
@@ -330,17 +369,17 @@ document.addEventListener('DOMContentLoaded', () => {
         tabsNav.addEventListener('click', (e) => {
             const clickedTab = e.target.closest('.tab-item');
             if (!clickedTab) return;
-            
+
             // Update active tab
             tabsNav.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('tab-item--active'));
             clickedTab.classList.add('tab-item--active');
-            
+
             // Show/hide tab content
             const tabId = clickedTab.dataset.tab;
             tabContents.forEach(content => {
                 content.classList.toggle('tab-content--active', content.id === `tab-${tabId}`);
             });
-            
+
             // Load tab-specific content
             if (tabId === 'favorites') renderFavoriteJobs();
             if (tabId === 'manage') renderManageList();
@@ -486,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newBadge = isNew ? '<span class="job-card__badge job-card__badge--new">NEW!</span>' : '';
         const featuredBadge = featured ? '<span class="job-card__badge job-card__badge--featured">FEATURED</span>' : '';
         const featuredClass = featured ? 'job-card--featured' : '';
-        
+
         const isFavorite = favoriteJobIds.includes(id);
         const favoriteClass = isFavorite ? 'job-card__favorite-btn--active' : '';
         const favoriteIcon = isFavorite ? '★' : '☆';
@@ -518,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : '<p class="job-listings__empty">No jobs match your search.</p>';
     };
 
-    /**
+    /*
      * Renders active filter tags
      * @function renderManualFilterTags
      */
@@ -549,26 +588,23 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Applies all active filters and updates display
      * @function applyAllFilters
+     * 
      */
     const applyAllFilters = () => {
 
-            searchInput.addEventListener('input',(e)=>{
-            const inputValue = e.target.value 
+           searchInput.addEventListener('input', (e) => {
+            const inputValue = e.target.value
             console.log(inputValue)
-            
-            const companies=allJobs.filter(item =>item.company.toLowerCase().includes(inputValue.toLowerCase()));
-             
-            const skills=allJobs.filter(item =>item.skills.toLowerCase().find(inputValue.toLowerCase()));
-          const poste=allJobs.filter(item =>item.role.toLowerCase().find(inputValue.toLowerCase()));
 
-            // console.log('the element is found ',finded)
-               renderJobs(skills)
-              renderJobs(companies)
-              renderJobs(poste)
+
+
+            const companies = allJobs.filter(item => item.company.toLowerCase().includes(inputValue.toLowerCase()) || item.skills.find(element => element.toLowerCase().includes(inputValue.toLowerCase())) || item.position.toLowerCase().includes(inputValue.toLowerCase()));
+            renderJobs(companies)
+
 
 
         })
- 
+
         // TODO: Implement comprehensive filtering
         // 1. Get search term
         // 2. Combine profile skills and manual filters
@@ -647,13 +683,13 @@ document.addEventListener('DOMContentLoaded', () => {
         viewModal.addEventListener('click', (e) => { if (e.target === viewModal) closeViewModal(); });
         manageModalCloseBtn.addEventListener('click', closeManageModal);
         manageModal.addEventListener('click', (e) => { if (e.target === manageModal) closeManageModal(); });
-        
+
         // Management events
         addNewJobBtn.addEventListener('click', () => openManageModal());
-        
+
         // Initial job display
         renderJobs(allJobs);
-        
+
         // TODO: Add remaining event listeners
         // Profile events
         // Filter events  
