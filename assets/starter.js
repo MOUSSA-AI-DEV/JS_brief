@@ -16,7 +16,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-
     // ------------------------------------
     // --- GLOBAL VARIABLES ---
     // ------------------------------------
@@ -211,25 +210,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let arraySkils = []
         // search regulare
 
-       
-       
         skillInput.addEventListener("keydown", (event)=> {
             const Skile_value = event.target.value 
             if (event.key === "Enter") {
                 arraySkils.push(Skile_value) 
                 console.log(Skile_value)
                 console.log(arraySkils)
-
-   
-                // profileSkillsList.innerHTML=(AfficheSkils("moussa"))
-                // console.log(AfficheSkils("moussa"))
-                event.target.value =""
+                event.target.value=""
                 event.preventDefault()
             }
 
             Renderskils(arraySkils)
+         
         },
-
+          
         )
 
        
@@ -243,13 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
 console.log(skill)
            return `<li class="profile-skill-tag" data-skill="${skill}">
              <span>${skill}</span>
-             <button class="profile-skill-remove" aria-label="Remove skill ${skill}">✕</button>
+             <button  class="profile-skill-remove" aria-label="Remove skill ${skill}">✕</button>
           </li>`
         }
         
         const Renderskils = (arraySkils) => {
             profileSkillsList.innerHTML = arraySkils.length>0
-                ? arraySkils.map(AfficheSkils).join('')
+                ? arraySkils.map((el)=>AfficheSkils(el)).join('')
                 : '<p class="job-listings__empty">No skils match your search.</p>'
         };
     
@@ -298,13 +292,22 @@ console.log(skill)
      * @param {Event} e - Click event
      */
     const handleSkillRemove = (e) => {
-        // TODO: Implement skill removal
+     
+        // let btn_delete_skil = document.querySelectorAll(".profile-skill-remove")
+        // // this.closest('.card')
+        // btn_delete_skil.forEach((btn)=>{
+        //     // e.preventDefault()
+        //     btn.addEventListener("click",()=>{
+        //     this.parentElement.remove()
+        
+        // })})
+        // sk1 TODO: Implement skill removal
         // 1. Find clicked remove button
         // 2. Get skill name
         // 3. Remove from profile
         // 4. Re-render and apply filters
     };
-
+    // handleSkillRemove()
     // ------------------------------------
     // --- FAVORITES MANAGEMENT ---
     // ------------------------------------
@@ -598,7 +601,9 @@ console.log(skill)
 
 
 
-            const companies = allJobs.filter(item => item.company.toLowerCase().includes(inputValue.toLowerCase()) || item.skills.find(element => element.toLowerCase().includes(inputValue.toLowerCase())) || item.position.toLowerCase().includes(inputValue.toLowerCase()));
+            const companies = allJobs.filter(item => item.company.toLowerCase().includes(inputValue.toLowerCase()) 
+            || item.skills.find(element => element.toLowerCase().includes(inputValue.toLowerCase())) ||
+             item.position.toLowerCase().includes(inputValue.toLowerCase()));
             renderJobs(companies)
 
 
