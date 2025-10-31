@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
           
         )
-
+ 
        
         //    re1 
 
@@ -292,22 +292,21 @@ console.log(skill)
      * @param {Event} e - Click event
      */
     const handleSkillRemove = (e) => {
-     
-        // let btn_delete_skil = document.querySelectorAll(".profile-skill-remove")
-        // // this.closest('.card')
-        // btn_delete_skil.forEach((btn)=>{
-        //     // e.preventDefault()
-        //     btn.addEventListener("click",()=>{
-        //     this.parentElement.remove()
-        
-        // })})
+        const ul = document.querySelector("#profile-skills-list");
+        ul.addEventListener("click", function (event) {
+            if (event.target.classList.contains("profile-skill-remove")) {
+                const li = event.target.closest("li");
+                li.remove(); // Remove the clicked li
+            }
+        });
         // sk1 TODO: Implement skill removal
         // 1. Find clicked remove button
         // 2. Get skill name
         // 3. Remove from profile
         // 4. Re-render and apply filters
     };
-    // handleSkillRemove()
+    handleSkillRemove()
+
     // ------------------------------------
     // --- FAVORITES MANAGEMENT ---
     // ------------------------------------
@@ -320,7 +319,7 @@ console.log(skill)
         // TODO: Implement favorites saving
     };
 
-    /**
+    /** 
      * Loads favorites from localStorage
      * @function loadFavorites
      */
@@ -333,7 +332,8 @@ console.log(skill)
      * @function renderFavoritesCount
      */
     const renderFavoritesCount = () => {
-        // TODO: Update favorites count in tab
+
+        // TODO: Update favorites count in tableaux
     };
 
     /**
@@ -341,11 +341,23 @@ console.log(skill)
      * @function renderFavoriteJobs
      */
     const renderFavoriteJobs = () => {
+        let favoriteJobIds = [];
+        const article = document.querySelectorAll(".job-card ")
+        article.forEach((el) => { 
+       el.addEventListener("click", (e)=>{
+        console.log(e.target) 
+        e.preventDefault()
+    })})
+
+        // 
+        // f1
+          
         // TODO: Implement favorites rendering
         // 1. Filter jobs by favorite IDs
         // 2. Use createJobCardHTML for each job
         // 3. Show empty message if no favorites
     };
+    renderFavoriteJobs()
 
     /**
      * Toggles job favorite status
