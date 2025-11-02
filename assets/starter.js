@@ -125,10 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // TODO: Implement localStorage save functionality
     };
-
-    // ------------------------------------
-    // --- FORM VALIDATION ---
-    // ------------------------------------
+    // ----------------------------
+    // FORM VALIDATION
+    // ----------------------------
 
     /**
      * Shows error message for a form field
@@ -141,6 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Add error class to input
         // 2. Find error span element
         // 3. Display error message
+        const errorSpan = document.querySelector(".form-error");
+
+        if (errorSpan) {
+            errorSpan.textContent = message;       
+            errorSpan.style.display = "inline";  
+        }
+
+        input.classList.add("has-error"); 
     };
 
     /**
@@ -158,12 +165,36 @@ document.addEventListener('DOMContentLoaded', () => {
      * Validates the profile form
      * @function validateProfileForm
      * @returns {boolean} True if valid, false otherwise
+     *  
      */
+    const btnSaveInfo = document.querySelector(".profile-form__save-btn")
+
+    btnSaveInfo.addEventListener("click", (e) => {
+         if (!validateProfileForm()) {
+             e.preventDefault();
+         }
+     });
     const validateProfileForm = () => {
         // TODO: Implement profile form validation
         // 1. Check required fields
         // 2. Show errors if invalid
         // 3. Return validation result
+        const nameRegex = /^[a-zA-Z\s]{2,}$/;
+        const positionRegex = /^[a-zA-Z\s]{2,}$/;
+        // Presumed inputs:
+        // profileNameInput, profilePositionInput, btnSaveInfo
+        
+
+        if (!profileNameInput.value || !nameRegex.test(profileNameInput.value)) {
+            showError(profileNameInput, "Nom invalide");
+            return false;
+        }
+
+        if (!profilePositionInput.value || !positionRegex.test(profilePositionInput.value)) {
+            showError(profilePositionInput, "Position invalide");
+            return false;
+        }
+
         return true;
     };
 
@@ -180,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     };
 
+    // validateProfileForm()
     // ------------------------------------
     // --- PROFILE MANAGEMENT ---
     // ------------------------------------
@@ -204,29 +236,32 @@ document.addEventListener('DOMContentLoaded', () => {
      * Renders profile skills list
      * @function renderProfileSkills
      */
-  
+
     const renderProfileSkills = () => {
         console.log("mouusasasa")
         let arraySkils = []
         // search regulare
 
-        skillInput.addEventListener("keydown", (event)=> {
-            const Skile_value = event.target.value 
+        skillInput.addEventListener("keydown", (event) => {
+            const Skile_value = event.target.value
             if (event.key === "Enter") {
-                arraySkils.push(Skile_value) 
+                arraySkils.push(Skile_value)
                 console.log(Skile_value)
                 console.log(arraySkils)
-                event.target.value=""
+                event.target.value = ""
                 event.preventDefault()
             }
-
+            const skils = allJobs.filter(item =>
+                item.skills.find(element => element.toLowerCase().includes(Skile_value.toLowerCase())))
+              
+            renderJobs(skils)
             Renderskils(arraySkils)
-         
+
         },
-          
+
         )
- 
-       
+
+
         //    re1 
 
         // TODO: Implement skills rendering
@@ -234,21 +269,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         function AfficheSkils(skill) {
-console.log(skill)
-           return `<li class="profile-skill-tag" data-skill="${skill}">
+            console.log(skill)
+            return `<li class="profile-skill-tag" data-skill="${skill}">
              <span>${skill}</span>
              <button  class="profile-skill-remove" aria-label="Remove skill ${skill}">✕</button>
           </li>`
         }
-        
+
         const Renderskils = (arraySkils) => {
-            profileSkillsList.innerHTML = arraySkils.length>0
-                ? arraySkils.map((el)=>AfficheSkils(el)).join('')
+            profileSkillsList.innerHTML = arraySkils.length > 0
+                ? arraySkils.map((el) => AfficheSkils(el)).join('')
                 : '<p class="job-listings__empty">No skils match your search.</p>'
         };
-    
 
-      
+
+
 
     };
 
@@ -340,24 +375,60 @@ console.log(skill)
      * Renders favorite jobs in favorites tab
      * @function renderFavoriteJobs
      */
+    let count = 0;
+    const count_span = document.querySelector("#favorites-count"); // sélectionne **le premier élément** avec cette classe
+   
+   
+   
     const renderFavoriteJobs = () => {
-        let favoriteJobIds = [];
-        const article = document.querySelectorAll(".job-card ")
-        article.forEach((el) => { 
-       el.addEventListener("click", (e)=>{
-        console.log(e.target) 
-        e.preventDefault()
-    })})
+        const div_favoris = document.getElementById("tab-favorites");
+        const articles = document.getElementsByClassName("job-card");
+        let favo = Array.from(articles);
 
-        // 
-        // f1
-          
-        // TODO: Implement favorites rendering
-        // 1. Filter jobs by favorite IDs
-        // 2. Use createJobCardHTML for each job
-        // 3. Show empty message if no favorites
+        for (let i = 0; i < favo.length; i++) {
+            let el = favo[i];
+            let button = el.querySelector("button");
+
+            button.addEventListener("click", function (e) {
+                count_span.textContent = count;
+
+                const isActive = button.classList.contains("job-card__favorite-btn--active");
+
+                if (!isActive) {
+                    button.classList.add("job-card__favorite-btn--active");
+                    count+=1
+                     
+
+
+                    const copie = el.cloneNode(true);
+                    div_favoris.appendChild(copie);
+
+                    copie.querySelector("button").addEventListener("click", function () {
+                        div_favoris.removeChild(copie);
+                        button.classList.remove("job-card__favorite-btn--active");
+                    });
+
+                } else {
+                    button.classList.remove("job-card__favorite-btn--active");
+                   count-=1
+
+                   
+
+                    const copies = div_favoris.getElementsByClassName("job-card");
+                    for (let j = 0; j < copies.length; j++) {
+                        if (copies[j].getAttribute("data-job-Id") === el.getAttribute("data-job-id")) {
+                            div_favoris.removeChild(copies[j]);
+                            
+                            break;
+                        }
+                    }
+                }
+            });
+        }
     };
-    renderFavoriteJobs()
+
+
+
 
     /**
      * Toggles job favorite status
@@ -607,15 +678,15 @@ console.log(skill)
      */
     const applyAllFilters = () => {
 
-           searchInput.addEventListener('input', (e) => {
+        searchInput.addEventListener('input', (e) => {
             const inputValue = e.target.value
             console.log(inputValue)
 
 
 
-            const companies = allJobs.filter(item => item.company.toLowerCase().includes(inputValue.toLowerCase()) 
-            || item.skills.find(element => element.toLowerCase().includes(inputValue.toLowerCase())) ||
-             item.position.toLowerCase().includes(inputValue.toLowerCase()));
+            const companies = allJobs.filter(item => item.company.toLowerCase().includes(inputValue.toLowerCase())
+                || item.skills.find(element => element.toLowerCase().includes(inputValue.toLowerCase())) ||
+                item.position.toLowerCase().includes(inputValue.toLowerCase()));
             renderJobs(companies)
 
 
@@ -694,7 +765,6 @@ console.log(skill)
         renderFavoritesCount();
         setupTabs();
         applyAllFilters();
-
         // Modal events
         viewModalCloseBtn.addEventListener('click', closeViewModal);
         viewModal.addEventListener('click', (e) => { if (e.target === viewModal) closeViewModal(); });
